@@ -1,0 +1,67 @@
+{
+  "extends": "lighthouse:default",
+  "settings": {
+    "onlyAudits": [
+      "first-contentful-paint",
+      "largest-contentful-paint",
+      "first-meaningful-paint",
+      "speed-index",
+      "cumulative-layout-shift",
+      "total-blocking-time",
+      "interactive",
+      "server-response-time",
+      "first-cpu-idle",
+      "uses-webp-images",
+      "uses-optimized-images",
+      "uses-text-compression",
+      "uses-responsive-images",
+      "efficient-animated-content",
+      "unused-css-rules",
+      "unused-javascript",
+      "modern-image-formats",
+      "prioritize-lcp-image",
+      "largest-contentful-paint-element",
+      "layout-shift-elements",
+      "non-composited-animations",
+      "unminified-css",
+      "unminified-javascript",
+      "render-blocking-resources",
+      "uses-passive-event-listeners",
+      "uses-rel-preconnect",
+      "uses-rel-preload",
+      "font-display",
+      "third-party-summary",
+      "bootup-time",
+      "mainthread-work-breakdown",
+      "dom-size",
+      "critical-request-chains",
+      "user-timings",
+      "diagnostics",
+      "network-requests",
+      "network-rtt",
+      "network-server-latency",
+      "main-thread-tasks",
+      "metrics",
+      "performance-budget",
+      "timing-budget",
+      "resource-summary"
+    ]
+  },
+  "audits": [
+    "performance-budget"
+  ],
+  "budgets": [{
+    "path": "/*",
+    "resourceCounts": [
+      {"resourceType": "script", "budget": 10},
+      {"resourceType": "image", "budget": 20},
+      {"resourceType": "stylesheet", "budget": 4}
+    ],
+    "resourceSizes": [
+      {"resourceType": "script", "budget": 500},
+      {"resourceType": "image", "budget": 1000},
+      {"resourceType": "stylesheet", "budget": 100},
+      {"resourceType": "total", "budget": 2000}
+    ]
+  }]
+}

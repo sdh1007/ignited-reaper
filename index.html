@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IgNited Reaper - Digital Necromancy</title>
+    <meta name="description" content="IgNited Reaper - Digital Necromancy & Beyond. Explore our haunted realm where digital artistry meets the eternal.">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #e2e8f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+        
+        .redirect-container {
+            background: rgba(15, 23, 42, 0.9);
+            padding: 40px;
+            border-radius: 15px;
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            max-width: 400px;
+        }
+        
+        .logo {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            color: #dc2626;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        p {
+            color: #94a3b8;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .spinner {
+            border: 3px solid rgba(220, 38, 38, 0.3);
+            border-top: 3px solid #dc2626;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .link {
+            color: #dc2626;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="redirect-container">
+        <div class="logo">☠</div>
+        <h1>IgNited Reaper</h1>
+        <p>Welcome to the Digital Graveyard</p>
+        <p>Redirecting you to our haunted realm...</p>
+        <div class="spinner"></div>
+        <p>If you're not redirected automatically, <a href="./IgNited Reaper/ignited-reaper-graveyard.html" class="link">click here</a></p>
+    </div>
+    
+    <script>
+        // Immediate redirect
+        window.location.href = './IgNited Reaper/ignited-reaper-graveyard.html';
+        
+        // Fallback redirect after 3 seconds
+        setTimeout(function() {
+            window.location.href = './IgNited Reaper/ignited-reaper-graveyard.html';
+        }, 3000);
+    </script>
+</body>
+</html>

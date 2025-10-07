@@ -1,0 +1,223 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Creepster&display=swap');
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    --surface-base: #121524;
+    --surface-elevated: rgba(26, 33, 62, 0.78);
+    --surface-panel: rgba(18, 24, 44, 0.86);
+    --surface-translucent: rgba(16, 22, 37, 0.65);
+    --surface-border: rgba(192, 202, 223, 0.16);
+    --surface-border-strong: rgba(238, 90, 111, 0.45);
+    --text-primary: #e0e0e0;
+    --text-secondary: #c5c6c7;
+    --text-muted: #9aa0a9;
+    --accent-ember: #ee5a6f;
+    --accent-ember-soft: rgba(238, 90, 111, 0.35);
+    --accent-ember-strong: rgba(238, 90, 111, 0.65);
+    --glow-ember: 0 0 26px rgba(238, 90, 111, 0.35);
+    --glow-spectral: 0 0 18px rgba(124, 126, 198, 0.35);
+    --gradient-sky: radial-gradient(circle at top, rgba(68, 87, 240, 0.28) 0%, rgba(18, 20, 36, 0.92) 62%, #121524 100%);
+    --gradient-ground: radial-gradient(circle at bottom, rgba(19, 20, 34, 0.92) 0%, rgba(10, 12, 22, 1) 70%);
+    --transition-eclipse: cubic-bezier(0.6, 0.04, 0.3, 1);
+  }
+
+  body[data-theme='day'] {
+    color-scheme: dark;
+    --surface-base: #18203c;
+    --surface-elevated: rgba(40, 55, 94, 0.75);
+    --surface-panel: rgba(46, 64, 108, 0.82);
+    --surface-translucent: rgba(46, 64, 108, 0.58);
+    --surface-border: rgba(215, 225, 245, 0.22);
+    --text-primary: #f2f3f7;
+    --text-secondary: #d7d9e4;
+    --text-muted: #afb3c1;
+    --accent-ember-soft: rgba(238, 90, 111, 0.28);
+    --gradient-sky: radial-gradient(circle at top, rgba(124, 168, 255, 0.35) 0%, rgba(34, 45, 78, 0.88) 60%, #18203c 100%);
+    --gradient-ground: radial-gradient(circle at bottom, rgba(24, 32, 60, 0.92) 0%, rgba(14, 18, 32, 0.98) 70%);
+  }
+
+  body[data-theme='night'] {
+    color-scheme: dark;
+  }
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  color: var(--text-primary);
+  background: var(--gradient-sky), var(--gradient-ground);
+  background-attachment: fixed;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  transition: background 1.5s var(--transition-eclipse), color 0.6s ease;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* Text clamp utilities */
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Gothic font for special elements */
+.font-gothic {
+  font-family: 'Creepster', serif;
+}
+
+.text-primary {
+  color: var(--text-primary);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+.panel-surface {
+  background: var(--surface-panel);
+  border: 1px solid var(--surface-border);
+  backdrop-filter: blur(18px);
+  box-shadow: var(--glow-spectral);
+}
+
+.halo-glow {
+  box-shadow: 0 0 60px rgba(117, 127, 191, 0.28);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Glassmorphism effects */
+.glass {
+  background: var(--surface-translucent);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--surface-border);
+}
+
+.glass-light {
+  background: linear-gradient(145deg, rgba(226, 232, 255, 0.25), rgba(205, 214, 247, 0.14));
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(88, 103, 163, 0.22);
+}
+
+/* Custom animations */
+@layer utilities {
+  .engraved-text {
+    position: relative;
+    text-shadow: 0 1px 0 rgba(10, 12, 20, 0.9), 0 0 18px rgba(238, 90, 111, 0.12);
+  }
+
+  .engraved-text::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(238, 90, 111, 0.4), transparent);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .engraved-text:hover::after,
+  .engraved-text:focus-visible::after {
+    opacity: 1;
+  }
+
+  .spectral-focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(18, 24, 44, 0.85), 0 0 0 4px var(--accent-ember-soft);
+    transition: box-shadow 0.4s var(--transition-eclipse);
+  }
+
+  .spectral-ring:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(18, 24, 44, 0.8), 0 0 0 4px rgba(238, 90, 111, 0.45);
+  }
+
+  .ember-glow {
+    box-shadow: var(--glow-ember);
+  }
+
+  .animate-float {
+    animation: lantern-drift 8s ease-in-out infinite;
+  }
+
+  .animate-glow {
+    animation: ember-pulse 3s ease-in-out infinite;
+  }
+
+  .animate-flicker {
+    animation: spectral-fade 1.6s ease-in-out infinite;
+  }
+
+  .animate-rise {
+    animation: lantern-drift 0.8s ease-out forwards;
+  }
+}

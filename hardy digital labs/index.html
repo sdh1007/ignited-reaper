@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <title>Hardy Digital Labs - iOS and Web Development in San Francisco</title>
+    <meta name="description" content="Hardy Digital Labs specializes in iOS app development, modern web development, and UI/UX design in San Francisco. Creating innovative mobile and web solutions.">
+    <link rel="stylesheet" href="styles.min.css">
+    <!-- Critical scripts loaded synchronously for proper dependency order -->
+    <script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
+    <script src="https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    
+    <!-- Script loading verification -->
+    <script>
+        // Check if Three.js loaded properly
+        if (typeof THREE === 'undefined') {
+            console.error('Three.js failed to load. Trying alternative CDN...');
+            // Try alternative CDN
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+            script.onload = function() {
+                console.log('Three.js loaded from alternative CDN');
+                // Load OrbitControls after Three.js
+                const orbitScript = document.createElement('script');
+                orbitScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/controls/OrbitControls.js';
+                document.head.appendChild(orbitScript);
+            };
+            script.onerror = function() {
+                console.error('Failed to load Three.js from all sources');
+            };
+            document.head.appendChild(script);
+        } else {
+            console.log('Three.js loaded successfully');
+        }
+    </script>
+    
+    <!-- Resource prioritization -->
+    <script>
+        // Critical resource loading optimization
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const isSlowConnection = navigator.connection && (navigator.connection.effectiveType === 'slow-2g' || navigator.connection.effectiveType === '2g');
+        
+        if (isMobile || isSlowConnection) {
+            document.documentElement.classList.add('low-performance');
+        }
+    </script>
+    <!-- Resource hints for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    
+    <!-- Optimized font loading -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Preload critical assets with optimized sizes -->
+    <link rel="preload" href="logo-512.png" as="image" type="image/png" media="(max-width: 768px)">
+    <link rel="preload" href="logo.svg" as="image" type="image/svg+xml" media="(min-width: 769px)">
+    <link rel="prefetch" href="main.js" as="script">
+    
+    <!-- Progressive image loading -->
+    <style>
+        .progressive-image {
+            filter: blur(5px);
+            transition: filter 0.3s;
+        }
+        .progressive-image.loaded {
+            filter: blur(0);
+        }
+        .img-placeholder {
+            background: linear-gradient(90deg, #333 25%, #444 50%, #333 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Skip to main content link -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div id="star-loader-container">
+            <div id="star-loader">
+                <div id="star-emoji-group"></div>
+                <div id="loading-text">Loading San Francisco</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Three.js Canvas Container -->
+    <div id="three-container">
+        <canvas id="three-canvas"></canvas>
+    </div>
+
+    <!-- Floating UI Overlay -->
+    <div id="ui-overlay">
+        <!-- Header -->
+        <header class="floating-header" role="banner">
+            <div class="logo-container">
+                <picture>
+                    <source media="(max-width: 768px)" srcset="logo-512.png" type="image/png">
+                    <img src="logo.svg" alt="Hardy Digital Labs Logo" class="company-logo progressive-image" id="company-logo">
+                </picture>
+                <div class="title-group">
+                    <h1 class="main-title">Hardy Digital Labs</h1>
+                    <p class="subtitle">Powering the Future in 3D</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="floating-nav" role="navigation" aria-label="Main navigation">
+            <button class="nav-btn active" data-section="home" aria-pressed="true" id="nav-home">Home</button>
+            <button class="nav-btn" data-section="services" aria-pressed="false" id="nav-services">Services</button>
+            <button class="nav-btn" data-section="about" aria-pressed="false" id="nav-about">About</button>
+            <button class="nav-btn" data-section="contact" aria-pressed="false" id="nav-contact">Contact</button>
+            <div class="language-toggle-container desktop-language-toggle">
+                <button id="language-toggle-desktop" aria-label="Toggle language" aria-describedby="language-description">🇺🇸/🇪🇸</button>
+                <span id="language-description" class="sr-only">Switch between English and Spanish</span>
+            </div>
+        </nav>
+        <!-- Hamburger for mobile (moved outside #ui-overlay) -->
+        <div class="hamburger" id="hamburger-menu" tabindex="0" aria-label="Open navigation" role="button">
+            <span></span>
+        </div>
+        <div id="nav-overlay" aria-hidden="true"></div>
+        <nav class="mobile-nav-drawer" id="mobile-nav-drawer" role="navigation" aria-label="Mobile navigation" aria-hidden="true">
+            <button class="mobile-nav-btn" data-section="home" aria-pressed="false">Home</button>
+            <button class="mobile-nav-btn" data-section="services" aria-pressed="false">Services</button>
+            <button class="mobile-nav-btn" data-section="about" aria-pressed="false">About</button>
+            <button class="mobile-nav-btn" data-section="contact" aria-pressed="false">Contact</button>
+            <div class="language-toggle-container">
+                <button id="language-toggle" aria-label="Toggle language" aria-describedby="mobile-language-description">🇺🇸/🇪🇸</button>
+                <span id="mobile-language-description" class="sr-only">Switch between English and Spanish</span>
+            </div>
+        </nav>
+        <!-- Main Content Area -->
+        <main id="main-content" class="content-panels" role="main">
+            <!-- Home Panel -->
+            <section class="panel active" id="home-panel" role="tabpanel" aria-labelledby="nav-home" tabindex="0">
+                <button class="minimize-btn" id="minimize-panel" aria-label="Minimize panel" aria-expanded="true">&#x25B2;</button>
+                <div class="panel-content">
+                    <h2>Welcome to San Francisco</h2>
+                    <p>Explore our 3D city and discover how Hardy Digital Labs brings digital innovation to life.</p>
+                    <div class="features" role="list" aria-label="Interactive features">
+                        <div class="feature" role="listitem">
+                            <h3>🏙️ Interactive City</h3>
+                            <p>Tap and explore</p>
+                        </div>
+                        <div class="feature" role="listitem">
+                            <h3>🌉 Landmarks</h3>
+                            <p>Golden Gate & Pyramid</p>
+                        </div>
+                        <div class="feature" role="listitem">
+                            <h3>🎮 Full Control</h3>
+                            <p>Drag, zoom, touch</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Services Panel -->
+            <section class="panel" id="services-panel" role="tabpanel" aria-labelledby="nav-services" tabindex="0" aria-hidden="true">
+                <h2>Our Services</h2>
+                <div class="services-grid" role="grid" aria-label="Service offerings">
+                    <article class="service-card" role="gridcell" tabindex="0">
+                        <h3>📱 iOS App Development</h3>
+                        <p>Swift, SwiftUI, and native iOS experiences for iPhone and iPad</p>
+                    </article>
+                    <article class="service-card" role="gridcell" tabindex="0">
+                        <h3>💻 Modern Web Development</h3>
+                        <p>React, Next.js, and responsive web applications</p>
+                    </article>
+                    <article class="service-card" role="gridcell" tabindex="0">
+                        <h3>🎨 UI/UX Design</h3>
+                        <p>User-centered design that prioritizes functionality and aesthetics</p>
+                    </article>
+                    <article class="service-card" role="gridcell" tabindex="0">
+                        <h3>🔧 Custom Solutions</h3>
+                        <p>Tailored mobile and web applications for unique business needs</p>
+                    </article>
+                </div>
+            </section>
+
+            <!-- About Panel -->
+            <section class="panel" id="about-panel" role="tabpanel" aria-labelledby="nav-about" tabindex="0" aria-hidden="true">
+                <h2>About Hardy Digital Labs</h2>
+                <p>I'm a passionate iOS and web developer based in San Francisco, specializing in creating apps and websites that combine Silicon Valley innovation with exceptional user experience.</p>
+                <div class="about-section">
+                    <h3>🚧 Current Projects</h3>
+                    <p>I'm currently building 12 exciting new apps and websites that showcase the latest in iOS and web development. These projects represent innovative solutions across various industries.</p>
+                </div>
+                <div class="about-section">
+                    <h3>📢 Major Announcement Coming November 2025</h3>
+                    <p>Stay tuned for a major announcement in November 2025 that will reveal these groundbreaking projects and introduce new opportunities.</p>
+                </div>
+                <div class="about-section">
+                    <h3>📱 Featured App</h3>
+                    <p>Check out my latest iOS app: <a href="https://apps.apple.com/us/app/splittip-pro/id6746974894" class="appstore-link" target="_blank" rel="noopener noreferrer" aria-label="SplitTip Pro on the App Store (opens in new tab)">SplitTip Pro</a> - Available now on the App Store</p>
+                </div>
+                <div class="stats about-stats" role="list" aria-label="Company statistics">
+                    <div class="stat" role="listitem">
+                        <h3>10+</h3>
+                        <p>Apps/Websites Built</p>
+                    </div>
+                    <div class="stat" role="listitem">
+                        <h3>12</h3>
+                        <p>In Development</p>
+                    </div>
+                    <div class="stat" role="listitem">
+                        <h3>iOS App Store</h3>
+                        <p>Publications</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Contact Panel -->
+            <section class="panel" id="contact-panel" role="tabpanel" aria-labelledby="nav-contact" tabindex="0" aria-hidden="true">
+                <h2>Get In Touch</h2>
+                <div class="contact-info" role="list" aria-label="Contact information">
+                    <div class="contact-item" role="listitem">
+                        <h3>📧 Email</h3>
+                        <p><a href="mailto:hello@hardydigitallabs.com" aria-label="Send email to hello@hardydigitallabs.com">hello@hardydigitallabs.com</a></p>
+                    </div>
+                    <div class="contact-item" role="listitem">
+                        <h3>📍 Location</h3>
+                        <p>San Francisco, CA</p>
+                    </div>
+                    <div class="contact-item" role="listitem">
+                        <h3>💼 LinkedIn</h3>
+                        <p>Hardy Digital Labs</p>
+                    </div>
+                </div>
+                <button class="cta-button" aria-describedby="cta-description">Start Your Project</button>
+                <p id="cta-description" class="sr-only">Open project inquiry form</p>
+            </section>
+        </main>
+
+        <!-- Controls Info -->
+        <aside class="controls-info" id="controls-info-bar" role="complementary" aria-label="3D scene controls">
+            <p>Drag • Pinch • Tap <button class="close-instructions" id="close-instructions" aria-label="Hide instructions">&times;</button></p>
+        </aside>
+
+        <!-- Day/Night Toggle -->
+        <div class="day-night-toggle">
+            <button id="toggle-time" aria-describedby="time-toggle-description">☀️ Day</button>
+            <span id="time-toggle-description" class="sr-only">Toggle between day and night view</span>
+        </div>
+        
+        <!-- Logo Watermark -->
+        <div class="logo-watermark" aria-hidden="true">
+            <picture>
+                <source media="(max-width: 768px)" srcset="logo-512.png" type="image/png">
+                <img src="logo.svg" alt="SI Logo" class="watermark-logo progressive-image" id="watermark-logo" loading="lazy">
+            </picture>
+        </div>
+    </div>
+
+    <!-- Pyramid Hover Tooltip -->
+    <div id="pyramid-tooltip" class="pyramid-tooltip" role="tooltip" aria-live="polite">
+        <div class="tooltip-content">
+            <h4>Transamerica Pyramid</h4>
+            <p>Click to learn about Hardy Digital Labs</p>
+        </div>
+    </div>
+
+    <!-- Progressive image loading script -->
+    <script>
+        // Progressive image loading
+        function loadProgressiveImages() {
+            const images = document.querySelectorAll('.progressive-image');
+            images.forEach(img => {
+                if (img.complete) {
+                    img.classList.add('loaded');
+                } else {
+                    img.addEventListener('load', () => {
+                        img.classList.add('loaded');
+                    });
+                }
+            });
+        }
+        
+        // Intersection Observer for lazy loading
+        if ('IntersectionObserver' in window) {
+            const lazyImageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        if (img.dataset.src) {
+                            img.src = img.dataset.src;
+                            img.classList.remove('img-placeholder');
+                            observer.unobserve(img);
+                        }
+                    }
+                });
+            });
+            
+            document.addEventListener('DOMContentLoaded', () => {
+                document.querySelectorAll('img[data-src]').forEach(img => {
+                    lazyImageObserver.observe(img);
+                });
+                loadProgressiveImages();
+            });
+        }
+    </script>
+    
+    <script src="performance-monitor.js" defer></script>
+    
+    <!-- Wait for Three.js to load before initializing main app -->
+    <script>
+        function waitForThreeJS() {
+            return new Promise((resolve, reject) => {
+                // Check if THREE is already available
+                if (typeof THREE !== 'undefined') {
+                    console.log('Three.js already loaded');
+                    resolve();
+                    return;
+                }
+                
+                // Wait for THREE to become available
+                let attempts = 0;
+                const maxAttempts = 50; // 5 seconds max
+                const checkInterval = setInterval(() => {
+                    attempts++;
+                    if (typeof THREE !== 'undefined') {
+                        console.log('Three.js loaded after waiting');
+                        clearInterval(checkInterval);
+                        resolve();
+                    } else if (attempts >= maxAttempts) {
+                        clearInterval(checkInterval);
+                        reject(new Error('Three.js failed to load within timeout'));
+                    }
+                }, 100);
+            });
+        }
+        
+        // Load main.js after Three.js is ready
+        waitForThreeJS().then(() => {
+            const script = document.createElement('script');
+            script.src = 'main.js';
+            document.head.appendChild(script);
+        }).catch((error) => {
+            console.error('Failed to load Three.js:', error);
+            // Show error message to user
+            const preloader = document.getElementById('preloader');
+            if (preloader) {
+                preloader.innerHTML = `
+                    <div style="text-align: center; color: white; padding: 20px;">
+                        <h3>Error Loading 3D Scene</h3>
+                        <p>Three.js failed to load. Please check your internet connection and refresh the page.</p>
+                        <button onclick="location.reload()" style="padding: 10px 20px; background: #ff6b35; border: none; color: white; border-radius: 5px; cursor: pointer;">Refresh Page</button>
+                    </div>
+                `;
+            }
+        });
+    </script>
+    
+    <!-- Performance optimization script -->
+    <script>
+        // Critical performance setup
+        // Avoid service worker during local development to prevent stale caches
+        if ('serviceWorker' in navigator && !location.hostname.includes('localhost')) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').catch((err) => {
+                    console.log('Service worker registration failed, continuing without caching:', err);
+                });
+            });
+        } else if ('serviceWorker' in navigator && location.hostname.includes('localhost')) {
+            // Actively unregister any existing SW and clear caches in dev
+            navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
+            if (window.caches) {
+                caches.keys().then(keys => keys.forEach(k => caches.delete(k)));
+            }
+        }
+        
+        // Optimize resource loading based on connection
+        if (navigator.connection) {
+            const connection = navigator.connection;
+            if (connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g') {
+                document.documentElement.classList.add('slow-connection');
+            }
+        }
+        
+        // Early mobile detection for critical path
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            document.documentElement.classList.add('mobile-device');
+        }
+    </script>
+</body>
+</html> 
